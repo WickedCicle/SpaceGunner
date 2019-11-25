@@ -48,6 +48,7 @@ void World::CreateMap(Ship Hero) {
 		}
 	}
 
+	SetCurPos(0, 0);
 	for (int i = 0; i < width; i++) {
 		wprintf_s(L"%s\n", map[i]);
 	}

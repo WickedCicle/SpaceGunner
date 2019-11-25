@@ -1,5 +1,6 @@
 #include "Ship.h"
 #include "World.h"
+#include "Sounds.h"
 
 int Ship::get_current_health() {
 	return current_health;
@@ -18,6 +19,9 @@ void Ship::DestroyShip() {
 }
 
 void Ship::Fire(vector<Bullet> &bullets) {
+	//Sound("Sounds\\ShootSound.wav");
+	Sound("Sounds\\Fire.wav");
+	//SoundPlay("Sounds\\Fire.wav");
 	bullets.push_back(Bullet(get_x_pos() + 1, get_y_pos()));
 }
 

@@ -7,10 +7,22 @@
 #include "KeyEvent.h"
 #include "Timer.h"
 #include <chrono>
+#include "Sounds.h"
+#include <thread>
 
 using namespace std;
 
+void MainMenu(int &length, int &width);
+void SettingMenu(int &length, int &width);
+
 int main() {
+	SetConsoleOutputCP(1251);
+
+	int length = 30;
+	int width = 15;
+
+	MainMenu(length, width);
+
 	SetConsoleOutputCP(65001);
 	UnicodeConnect();
 
@@ -22,7 +34,7 @@ int main() {
 	clock_t start;
 	float result = 0;
 
-	World map(60, 30);
+	World map(length, width);
 	vector<Bullet> bullets;
 	vector<Ship> enemies;
 	Ship Hero(7, 7, 100);
@@ -72,4 +84,170 @@ int main() {
 
 	system("Pause");
 	return 0;
+}
+
+void MainMenu(int &length, int &width) {
+	int switcher = 0;
+	wcout << "<<Играть>>\n";
+	wcout << "Настройки\n";
+
+	while (true) {
+		if (GetKeyState('W') < 0) {
+			Sleep(250);
+			system("cls");
+			Sound("Sounds\\MenuChange.wav");
+			if (switcher == 0) {
+				wcout << "Играть\n";
+				wcout << "<<Настройки>>\n";
+				switcher = 1;
+				continue;
+			}
+			if (switcher == 1) {
+				wcout << "<<Играть>>\n";
+				wcout << "Настройки\n";
+				switcher = 0;
+				continue;
+			}
+		}
+		if (GetKeyState('S') < 0) {
+			Sleep(250);
+			system("cls");
+			Sound("Sounds\\MenuChange.wav");
+			if (switcher == 0) {
+				wcout << "Играть\n";
+				wcout << "<<Настройки>>\n";
+				switcher = 1;
+				continue;
+			}
+			if (switcher == 1) {
+				wcout << "<<Играть>>\n";
+				wcout << "Настройки\n";
+				switcher = 0;
+				continue;
+			}
+		}
+
+		if (GetKeyState(VK_RETURN) < 0) {
+			if (switcher == 0) {
+				break;
+			}
+			if (switcher == 1) {
+				system("cls");
+				SettingMenu(length, width);
+				system("cls");
+				wcout << "<<Играть>>\n";
+				wcout << "Настройки\n";
+				switcher = 0;
+				Sleep(250);
+			}
+		}
+	}
+}
+
+void SettingMenu(int &length, int &width) {
+	int NextMenu = 0;
+	int switcher = 0;
+	wcout << "<< Длина поля >> = " << length << endl;
+	wcout << "Ширина поля = " << width << endl;
+	wcout << "Назад" << endl;
+
+	while (!NextMenu) {
+		if (GetKeyState('W') < 0) {
+			Sleep(250);
+			system("cls");
+			Sound("Sounds\\MenuChange.wav");
+			if (switcher == 0) {
+				wcout << "Длина поля = " << length << endl;
+				wcout << "Ширина поля = " << width << endl;
+				wcout << "<< Назад >>" << endl;
+				switcher = 2;
+				continue;
+			}
+			if (switcher == 1) {
+				wcout << "<< Длина поля >> = " << length << endl;
+				wcout << "Ширина поля = " << width << endl;
+				wcout << "Назад" << endl;
+				switcher = 0;
+				continue;
+			}
+			if (switcher == 2) {
+				wcout << "Длина поля = " << length << endl;
+				wcout << "<< Ширина поля >> = " << width << endl;
+				wcout << "Назад" << endl;
+				switcher = 1;
+				continue;
+			}
+		}
+		if (GetKeyState('S') < 0) {
+			Sleep(250);
+			system("cls");
+			Sound("Sounds\\MenuChange.wav");
+			if (switcher == 0) {
+				wcout << "Длина поля = " << length << endl;
+				wcout << "<< Ширина поля >> = " << width << endl;
+				wcout << "Назад" << endl;
+				switcher = 1;
+				continue;
+			}
+			if (switcher == 1) {
+				wcout << "Длина поля = " << length << endl;
+				wcout << "Ширина поля = " << width << endl;
+				wcout << "<< Назад >>" << endl;
+				switcher = 2;
+				continue;
+			}
+			if (switcher == 2) {
+				wcout << "<< Длина поля >> = " << length << endl;
+				wcout << "Ширина поля = " << width << endl;
+				wcout << "Назад" << endl;
+				switcher = 0;
+				continue;
+			}
+		}
+
+		if (GetKeyState(VK_LEFT) < 0) {
+			Sleep(125);
+			if (switcher == 0 && length > 30) {
+				system("cls");
+				length--;
+				wcout << "<< Длина поля >> = " << length << endl;
+				wcout << "Ширина поля = " << width << endl;
+				wcout << "Назад" << endl;
+				continue;
+			}
+			else if (switcher == 1 && width > 15) {
+				system("cls");
+				width--;
+				wcout << "Длина поля = " << length << endl;
+				wcout << "<< Ширина поля >> = " << width << endl;
+				wcout << "Назад" << endl;
+				continue;
+			}
+		}
+		if (GetKeyState(VK_RIGHT) < 0) {
+			Sleep(125);
+			if (switcher == 0 && length < 70) {
+				system("cls");
+				length++;
+				wcout << "<< Длина поля >> = " << length << endl;
+				wcout << "Ширина поля = " << width << endl;
+				wcout << "Назад" << endl;
+				continue;
+			}
+			else if (switcher == 1 && width < 30) {
+				system("cls");
+				width++;
+				wcout << "Длина поля = " << length << endl;
+				wcout << "<< Ширина поля >> = " << width << endl;
+				wcout << "Назад" << endl;
+				continue;
+			}
+		}
+
+		if (GetKeyState(VK_RETURN) < 0) {
+			if (switcher == 2) {
+				break;
+			}
+		}
+	}
 }

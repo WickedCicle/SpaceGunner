@@ -6,7 +6,7 @@
 #define KEY_H
 
 enum actions_cooldown {
-	shoot_cooldown = 150,
+	shoot_cooldown = 250,
 	move_cooldown = 100
 };
 

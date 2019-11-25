@@ -37,19 +37,19 @@ void MoveRight(Ship &Hero, World &map, Timer &Move) {
 }
 
 void KeyState(Ship &Hero, vector<Bullet> &bullets, World &map, Timer &Move, Timer &Shoot) {
-	if (GetAsyncKeyState('W') == -32768) { // W
+	if (GetKeyState('W') < 0) { // W
 		MoveUp(Hero, map, Move);
 	}
-	if (GetAsyncKeyState('S') == -32768) { // S
+	if (GetKeyState('S') < 0) { // S
 		MoveDown(Hero, map, Move);
 	}
-	if (GetAsyncKeyState('A') == -32768) { // A
+	if (GetKeyState('A') < 0) { // A
 		MoveLeft(Hero, map, Move);
 	}
-	if (GetAsyncKeyState('D') == -32768) { // D
+	if (GetKeyState('D') < 0) { // D
 		MoveRight(Hero, map, Move);
 	}
-	if (GetAsyncKeyState(VK_SPACE) == -32768) { // Пробел
+	if (GetKeyState(VK_SPACE) < 0) { // Пробел
 		if (Shoot.get_time() > actions_cooldown::shoot_cooldown) {
 			Hero.Fire(bullets);
 			Shoot.reset_time();
