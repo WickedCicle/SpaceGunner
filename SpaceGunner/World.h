@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 #include "Ship.h"
+#include "Enemy.h"
 #include "ConsoleSetUp.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -30,11 +32,13 @@ public:
 	int get_width();
 
 	void CreateMap(Ship Hero);
+	void CreateEnemies(vector<Enemy> &enemies, int Enemy_health);
 	void DrawMap();
 	void DrawBullets(vector<Bullet> &bullets);
-	void MoveBullets(vector<Bullet> &bullets);
-	void checkbullets(vector<Bullet> &bullets, vector<Ship> &enemies);
-	void bullet_out_of_range(vector<Bullet> &bullets);
+	void MoveBullets(vector<Bullet> &bullets, Timer& Bullets_Move);
+	void Move_Enemies(vector<Enemy> &enemies, Timer &Enemy_Move);
+	//void checkbullets(vector<Bullet> &bullets, vector<Ship> &enemies);
+	void checkbullets(vector<Bullet> &bullets, vector<Enemy> &enemies);
 	void SetMapSymbol(int x, int y, wchar_t symbol);
 	//wchar_t GetMapSymbol(int x, int y);
 };

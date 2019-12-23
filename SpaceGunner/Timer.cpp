@@ -13,7 +13,5 @@ void Timer::reset_time() {
 }
 
 void Timer::set_time(clock_t new_time) {
-	//time_from_last = new_time - time_from_last;
-	//time_from_last += new_time;
 	time_from_last = new_time - time_from_last;
 }

@@ -7,6 +7,7 @@ class Timer {
 private:
 	clock_t time_from_last = 0;
 public:
+	//Timer();
 	clock_t get_time();
 	void add_time(clock_t time);
 	void reset_time();

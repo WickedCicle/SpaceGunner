@@ -15,7 +15,7 @@ private:
 	int max_health;
 public:
 	Ship(int new_x, int new_y, int new_health) : Actor(new_x, new_y) {
-		IsDead = 0;
+		IsDead = false;
 		current_health = new_health;
 		max_health = new_health;
 	};

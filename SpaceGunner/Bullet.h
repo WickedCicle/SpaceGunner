@@ -5,7 +5,7 @@
 
 class Bullet : public Actor {
 private:
-	int damage = 10;	
+	int damage = 1;	
 public:
 	Bullet(int new_x, int new_y) : Actor(new_x, new_y) {};
 

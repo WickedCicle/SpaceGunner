@@ -1,4 +1,5 @@
-﻿#include "World.h"
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include "World.h"
 
 World::World(int new_length, int new_width) {
 	length = new_length;
@@ -72,11 +73,14 @@ void World::DrawBullets(vector<Bullet> &bullets) {
 	}
 }
 
-void World::MoveBullets(vector<Bullet> &bullets) {
-	int count_bullets = bullets.size();
+void World::MoveBullets(vector<Bullet> &bullets, Timer& Bullets_Move) {
+	if (Bullets_Move.get_time() > 1000/(length/2)) {
+		int count_bullets = bullets.size();
 
-	for (int i = 0; i < count_bullets; i++) {
-		bullets[i].set_x_pos(bullets[i].get_x_pos() + 1);
+		for (int i = 0; i < count_bullets; i++) {
+			bullets[i].set_x_pos(bullets[i].get_x_pos() + 1);
+		}
+		Bullets_Move.reset_time();
 	}
 }
 
@@ -88,22 +92,17 @@ void World::SetMapSymbol(int x, int y, wchar_t symbol) {
 	return map[y][x];
 }*/
 
-void World::bullet_out_of_range(vector<Bullet> &bullets) {
+void World::checkbullets(vector<Bullet> &bullets, vector<Enemy> &enemies) {
 	int count_bullets = bullets.size();
+	int count_enemies = enemies.size();
 
 	for (int i = count_bullets - 1; i >= 0; i--) {
 		if (bullets[i].get_x_pos() == length) {
 			SetMapSymbol(bullets[i].get_x_pos() - 1, bullets[i].get_y_pos(), map_symbols::space);
 			bullets.erase(bullets.begin() + i);
+			continue;
 		}
-	}
-}
 
-void World::checkbullets(vector<Bullet> &bullets, vector<Ship> &enemies) {
-	int count_bullets = bullets.size();
-	int count_enemies = enemies.size();
-
-	for (int i = count_bullets - 1; i >= 0; i--) {
 		if (map[bullets[i].get_y_pos()][bullets[i].get_x_pos()] == map_symbols::enemy) {
 			SetMapSymbol(bullets[i].get_x_pos() - 1, bullets[i].get_y_pos(), map_symbols::space);
 
@@ -124,10 +123,64 @@ void World::checkbullets(vector<Bullet> &bullets, vector<Ship> &enemies) {
 	}
 }
 
+void World::CreateEnemies(vector<Enemy> &enemies, int Enemy_health) {
+	for (int i = 3; i < width - 3; i += 2) {
+		for (int j = (3 * length) / 4; j < length; j += 2) {
+			map[i][j] = map_symbols::enemy;
+			enemies.push_back(Enemy(j, i, Enemy_health));
+		}
+	}
+}
+
+void World::Move_Enemies(vector<Enemy> &enemies, Timer &Enemy_Move) {
+	int enemies_count = enemies.size();
+	static int forward = 0;
+
+	if (Enemy_Move.get_time() >= 200) {
+		for (int i = 0; i < enemies_count; i++) {
+			if (enemies[i].get_direction() == direction::right && enemies[i].get_y_pos() >= (width - 3)) {
+				for (int j = 0; j < enemies_count; j++) {
+					enemies[j].reverse_dir();
+				}
+				break;
+			}
+			else if (enemies[i].get_direction() == direction::left && enemies[i].get_y_pos() <= 2) {
+				for (int j = 0; j < enemies_count; j++) {
+					enemies[j].reverse_dir();
+				}
+				break;
+			}
+			if (forward >= 5) {
+				for (int j = 0; j < enemies_count; j++) {
+					SetMapSymbol(enemies[j].get_x_pos(), enemies[j].get_y_pos(), map_symbols::space);
+					enemies[j].Move(-1, 0);
+					SetMapSymbol(enemies[j].get_x_pos(), enemies[j].get_y_pos(), map_symbols::enemy);
+					forward = 0;
+				}
+			}
+		}
+		for (int i = 0; i < enemies_count; i++) {
+			if (enemies[i].get_direction() == direction::right) {
+				SetMapSymbol(enemies[i].get_x_pos(), enemies[i].get_y_pos(), map_symbols::space);
+				enemies[i].Move(0, 1);
+				SetMapSymbol(enemies[i].get_x_pos(), enemies[i].get_y_pos(), map_symbols::enemy);
+			}
+			if (enemies[i].get_direction() == direction::left) {
+				SetMapSymbol(enemies[i].get_x_pos(), enemies[i].get_y_pos(), map_symbols::space);
+				enemies[i].Move(0, -1);
+				SetMapSymbol(enemies[i].get_x_pos(), enemies[i].get_y_pos(), map_symbols::enemy);
+			}
+		}
+
+		forward++;
+		Enemy_Move.reset_time();
+	}
+}
+
 void World::DrawMap() {
 	SetCurPos(0, 2);
 
 	for (int i = 2; i < width - 2; i++) {
-		wprintf_s(L"%ls\n", map[i]);
+		wprintf_s(L"%ls\n", *(map + i));
 	}
 }
