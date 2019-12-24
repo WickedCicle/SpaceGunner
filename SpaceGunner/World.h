@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "ConsoleSetUp.h"
 #include "Timer.h"
+#include "Menu.h"
 
 using namespace std;
 
@@ -32,14 +33,13 @@ public:
 	int get_width();
 
 	void CreateMap(Ship Hero);
-	void CreateEnemies(vector<Enemy> &enemies, int Enemy_health);
-	void DrawMap();
-	void DrawBullets(vector<Bullet> &bullets);
-	void MoveBullets(vector<Bullet> &bullets, Timer& Bullets_Move);
-	void Move_Enemies(vector<Enemy> &enemies, Timer &Enemy_Move);
-	//void checkbullets(vector<Bullet> &bullets, vector<Ship> &enemies);
-	void checkbullets(vector<Bullet> &bullets, vector<Enemy> &enemies);
+	void CreateEnemies(vector<Enemy> &enemies, int Enemy_health, FirstEnemyPos &EnemyPos);
+	void DrawMap(bool &EscapePressed);
+	void DrawBullets(vector<Bullet> &bullets, vector<Bullet> &enemy_bullets);
+	void MoveBullets(vector<Bullet> &bullets, vector<Bullet> &enemy_bullets, Timer& Bullets_Move, Timer &Enemy_Bullets_Move);
+	void Move_Enemies(vector<Enemy> &enemies, Timer &Enemy_Move, FirstEnemyPos &EnemyPos, Settings_Args &SetArgs, bool &Win, Ship &Hero);
+	void Enemy_Fire(vector<Bullet> &enemy_bullets, FirstEnemyPos &EnemyPos, Timer &EnemyFire);
+	void checkbullets(Ship &Hero, vector<Bullet> &bullets, vector<Enemy> &enemies, vector<Bullet> &enemy_bullets, Settings_Args &SetArgs, int &Score);
 	void SetMapSymbol(int x, int y, wchar_t symbol);
-	//wchar_t GetMapSymbol(int x, int y);
 };
 #endif // !WORLD_H

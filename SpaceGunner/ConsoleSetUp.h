@@ -8,6 +8,9 @@
 
 void HideCursor();
 void SetCurPos(int x, int y);
+void FullScreen();
+void RemoveScrollBox();
+void LucidaConnect();
 void UnicodeConnect();
 
 #endif // !CONSOLE_H

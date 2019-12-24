@@ -19,7 +19,12 @@ enum SettingsMenu {
 	Back = 5
 };
 
-void MainMenu(int &length, int &width, int &Hero_health, int &Enemy_health) {
+enum EscapeMenu {
+	Continue = 0,
+	ExitGame = 1
+};
+
+void MainMenu(Settings_Args &SetArgs) {
 	bool IsLeaderBoardOpened = false;
 	int switcher = MainMenu::Play;
 	wcout << "<< Играть >>\n";
@@ -29,7 +34,7 @@ void MainMenu(int &length, int &width, int &Hero_health, int &Enemy_health) {
 	wcout << "Выход\n";
 
 	while (true) {
-		if (GetKeyState('W') < 0) {
+		if (GetKeyState('W') < 0 || GetKeyState(VK_UP) < 0) {
 			Sleep(250);
 			system("cls");
 			if (switcher == MainMenu::Play) {
@@ -78,7 +83,7 @@ void MainMenu(int &length, int &width, int &Hero_health, int &Enemy_health) {
 				continue;
 			}
 		}
-		if (GetKeyState('S') < 0) {
+		if (GetKeyState('S') < 0 || GetKeyState(VK_DOWN) < 0) {
 			Sleep(250);
 			system("cls");
 			if (switcher == MainMenu::Play) {
@@ -130,12 +135,13 @@ void MainMenu(int &length, int &width, int &Hero_health, int &Enemy_health) {
 
 		if (GetKeyState(VK_RETURN) < 0) {
 			if (switcher == MainMenu::Play) {
+				cin.ignore(cin.rdbuf()->in_avail());
 				system("cls");
 				break;
 			}
 			else if (switcher == MainMenu::Settings) {
 				system("cls");
-				SettingsMenu(length, width, Hero_health, Enemy_health);
+				SettingsMenu(SetArgs);;
 				system("cls");
 				wcout << "<< Играть >>\n";
 				wcout << "Настройки\n";
@@ -176,138 +182,138 @@ void MainMenu(int &length, int &width, int &Hero_health, int &Enemy_health) {
 	}
 }
 
-void SettingsMenu(int &length, int &width, int &Hero_health, int &Enemy_health) {
+void SettingsMenu(Settings_Args &SetArgs) {
 	int switcher = SettingsMenu::Length;
-	wcout << "<< Длина поля >> = " << length << "\n";
-	wcout << "Ширина поля = " << width << "\n";
-	wcout << "Здоровье корабля = " << Hero_health << "\n";
-	wcout << "Здоровье врагов = " << Enemy_health << "\n";
+	wcout << "<< Длина поля >> = " << SetArgs.length << "\n";
+	wcout << "Ширина поля = " << SetArgs.width << "\n";
+	wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+	wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 	wcout << "Установить значения по умолчанию" << "\n";
 	wcout << "Назад\n";
 
 	while (true) {
-		if (GetKeyState('W') < 0) {
+		if (GetKeyState('W') < 0 || GetKeyState(VK_UP) < 0) {
 			Sleep(250);
 			system("cls");
 			if (switcher == SettingsMenu::Length) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию" << "\n";
 				wcout << "<< Назад >>" << "\n";
 				switcher = SettingsMenu::Back;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Width) {
-				wcout << "<< Длина поля >> = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "<< Длина поля >> = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Length;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Hero_Health) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "<< Ширина поля >> = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "<< Ширина поля >> = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Width;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Enemy_Health) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "<< Здоровье корабля >> = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "<< Здоровье корабля >> = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Hero_Health;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Defaults) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "<< Здоровье врагов >> = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "<< Здоровье врагов >> = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Enemy_Health;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Back) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "<< Установить значения по умолчанию >>\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Defaults;
 				continue;
 			}
 		}
-		if (GetKeyState('S') < 0) {
+		if (GetKeyState('S') < 0 || GetKeyState(VK_DOWN) < 0) {
 			Sleep(250);
 			system("cls");
 			if (switcher == SettingsMenu::Length) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "<< Ширина поля >> = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "<< Ширина поля >> = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Width;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Width) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "<< Здоровье корабля >> = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "<< Здоровье корабля >> = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Hero_Health;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Hero_Health) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "<< Здоровье врагов >> = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "<< Здоровье врагов >> = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Enemy_Health;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Enemy_Health) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "<< Установить значения по умолчанию >>\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Defaults;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Defaults) {
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "<< Назад >>\n";
 				switcher = SettingsMenu::Back;
 				continue;
 			}
 			else if (switcher == SettingsMenu::Back) {
-				wcout << "<< Длина поля >> = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				wcout << "<< Длина поля >> = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				switcher = SettingsMenu::Length;
@@ -315,95 +321,95 @@ void SettingsMenu(int &length, int &width, int &Hero_health, int &Enemy_health) 
 			}
 		}
 
-		if (GetKeyState(VK_LEFT) < 0) {
+		if (GetKeyState(VK_LEFT) < 0 || GetKeyState('A') < 0) {
 			Sleep(125);
-			if (switcher == SettingsMenu::Length && length > 30) {
+			if (switcher == SettingsMenu::Length && SetArgs.length > 30) {
 				system("cls");
-				length--;
-				wcout << "<< Длина поля >> = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				SetArgs.length--;
+				wcout << "<< Длина поля >> = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				continue;
 			}
-			else if (switcher == SettingsMenu::Width && width > 15) {
+			else if (switcher == SettingsMenu::Width && SetArgs.width > 15) {
 				system("cls");
-				width--;
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "<< Ширина поля >> = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				SetArgs.width--;
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "<< Ширина поля >> = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				continue;
 			}
-			else if (switcher == SettingsMenu::Hero_Health && Hero_health > 1) {
+			else if (switcher == SettingsMenu::Hero_Health && SetArgs.Hero_health > 1) {
 				system("cls");
-				Hero_health--;
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "<< Здоровье корабля >> = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				SetArgs.Hero_health--;
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "<< Здоровье корабля >> = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				continue;
 			}
-			else if (switcher == SettingsMenu::Enemy_Health && Enemy_health > 1) {
+			else if (switcher == SettingsMenu::Enemy_Health && SetArgs.Enemy_health > 1) {
 				system("cls");
-				Enemy_health--;
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "<< Здоровье врагов >> = " << Enemy_health << "\n";
+				SetArgs.Enemy_health--;
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "<< Здоровье врагов >> = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				continue;
 			}
 		}
-		if (GetKeyState(VK_RIGHT) < 0) {
+		if (GetKeyState(VK_RIGHT) < 0 || GetKeyState('D') < 0) {
 			Sleep(125);
-			if (switcher == SettingsMenu::Length && length < 70) {
+			if (switcher == SettingsMenu::Length && SetArgs.length < 70) {
 				system("cls");
-				length++;
-				wcout << "<< Длина поля >> = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				SetArgs.length++;
+				wcout << "<< Длина поля >> = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				continue;
 			}
-			else if (switcher == SettingsMenu::Width && width < 30) {
+			else if (switcher == SettingsMenu::Width && SetArgs.width < 30) {
 				system("cls");
-				width++;
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "<< Ширина поля >> = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				SetArgs.width++;
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "<< Ширина поля >> = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				continue;
 			}
-			else if (switcher == SettingsMenu::Hero_Health && Hero_health < 5) {
+			else if (switcher == SettingsMenu::Hero_Health && SetArgs.Hero_health < 5) {
 				system("cls");
-				Hero_health++;
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "<< Здоровье корабля >> = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				SetArgs.Hero_health++;
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "<< Здоровье корабля >> = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				continue;
 			}
-			else if (switcher == SettingsMenu::Enemy_Health && Enemy_health < 3) {
+			else if (switcher == SettingsMenu::Enemy_Health && SetArgs.Enemy_health < 3) {
 				system("cls");
-				Enemy_health++;
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "<< Здоровье врагов >> = " << Enemy_health << "\n";
+				SetArgs.Enemy_health++;
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "<< Здоровье врагов >> = " << SetArgs.Enemy_health << "\n";
 				wcout << "Установить значения по умолчанию\n";
 				wcout << "Назад\n";
 				continue;
@@ -416,14 +422,14 @@ void SettingsMenu(int &length, int &width, int &Hero_health, int &Enemy_health) 
 			}
 			else if (switcher == SettingsMenu::Defaults) {
 				system("cls");
-				length = 30;
-				width = 15;
-				Hero_health = 3;
-				Enemy_health = 1;
-				wcout << "Длина поля = " << length << "\n";
-				wcout << "Ширина поля = " << width << "\n";
-				wcout << "Здоровье корабля = " << Hero_health << "\n";
-				wcout << "Здоровье врагов = " << Enemy_health << "\n";
+				SetArgs.length = 60;
+				SetArgs.width = 25;
+				SetArgs.Hero_health = 3;
+				SetArgs.Enemy_health = 1;
+				wcout << "Длина поля = " << SetArgs.length << "\n";
+				wcout << "Ширина поля = " << SetArgs.width << "\n";
+				wcout << "Здоровье корабля = " << SetArgs.Hero_health << "\n";
+				wcout << "Здоровье врагов = " << SetArgs.Enemy_health << "\n";
 				wcout << "<< Установить значения по умолчанию >>\n";
 				wcout << "Назад\n";
 				Sleep(125);
@@ -455,6 +461,11 @@ void LeaderBoard(bool &IsOpened) {
 	}
 
 	int players_count = scoreboard.size();
+
+	if (!players_count) {
+		cout << "В таблице лидеров пока нет ни одного результата.\n";
+	}
+
 	if (players_count > 10) {
 		players_count = 10;
 	}
@@ -470,6 +481,58 @@ void LeaderBoard(bool &IsOpened) {
 	while (true) {
 		if (GetKeyState(VK_RETURN) < 0) {
 			break;
+		}
+	}
+}
+
+void EscMenu() {
+	system("cls");
+	int switcher = EscapeMenu::Continue;
+	wcout << L"<< Продолжить >>\n";
+	wcout << L"Выход\n";
+
+	while (true) {
+		if (GetKeyState('W') < 0 || GetKeyState(VK_UP) < 0) {
+			Sleep(250);
+			if (switcher == EscapeMenu::Continue) {
+				system("cls");
+				wcout << L"Продолжить\n";
+				wcout << L"<< Выход >>\n";
+				switcher = EscapeMenu::ExitGame;
+				continue;
+			}
+			else if (switcher == EscapeMenu::ExitGame) {
+				system("cls");
+				wcout << L"<< Продолжить >>\n";
+				wcout << L"Выход\n";
+				switcher = EscapeMenu::Continue;
+				continue;
+			}
+		}
+		if (GetKeyState('S') < 0 || GetKeyState(VK_DOWN) < 0) {
+			Sleep(250);
+			if (switcher == EscapeMenu::Continue) {
+				system("cls");
+				wcout << L"Продолжить\n";
+				wcout << L"<< Выход >>\n";
+				switcher = EscapeMenu::ExitGame;
+				continue;
+			}
+			else if (switcher == EscapeMenu::ExitGame) {
+				system("cls");
+				wcout << L"<< Продолжить >>\n";
+				wcout << L"Выход\n";
+				switcher = EscapeMenu::Continue;
+				continue;
+			}
+		}
+		if (GetKeyState(VK_RETURN) < 0) {
+			if (switcher == EscapeMenu::Continue) {
+				break;
+			}
+			else if (switcher == EscapeMenu::ExitGame) {
+				ExitProcess(0);
+			}
 		}
 	}
 }

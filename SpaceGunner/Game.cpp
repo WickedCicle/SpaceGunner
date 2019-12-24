@@ -7,28 +7,29 @@
 #include "KeyEvent.h"
 #include "Timer.h"
 #include <chrono>
-#include <thread>
 #include "Menu.h"
 #include "Enemy.h"
 
 using namespace std;
 
 int main() {
-	HideCursor();
 	SetConsoleOutputCP(1251);
+	RemoveScrollBox();
+	FullScreen();
+	HideCursor();
+	//LucidaConnect();
+	srand(time(NULL));
 
+	bool EscapePressed = false;
 	bool Win = false;
+	int Score = 0;
 
 	string NickName;
-
-	int length = 30;
-	int width = 15;
-	int Hero_health = 3;
-	int Eneny_health = 1;
-
-	MainMenu(length, width, Hero_health, Eneny_health);
-
 	NickName = WriteName();
+	Sleep(200);
+
+	Settings_Args SetArgs;
+	MainMenu(SetArgs);
 
 	SetConsoleOutputCP(65001);
 	UnicodeConnect();
@@ -37,53 +38,55 @@ int main() {
 	Timer Shoot;
 	Timer Enemy_Move;
 	Timer Bullets_Move;
+	Timer Enemy_Bullets_Move;
+	Timer Enemy_Fire_Time;
 
 	clock_t start;
 	float result = 0;
 
-	World map(length, width);
+	FirstEnemyPos EnemyPos;
+	World map(SetArgs.length, SetArgs.width);
 	vector<Enemy> enemies;
 	vector<Bullet> bullets;
-	Ship Hero(0, (int)width/2, Hero_health);
+	vector<Bullet> enemy_bullets;
+	Ship Hero(0, (int)SetArgs.width/2, SetArgs.Hero_health);
 
 	map.CreateMap(Hero);
-	map.CreateEnemies(enemies, Eneny_health);
-
-	srand(time(NULL));
+	map.CreateEnemies(enemies, SetArgs.Enemy_health, EnemyPos);
 
 	while (!Hero.get_Is_dead() && !Win) {
 		start = clock();
 
 		HideCursor();
-		KeyState(Hero, bullets, map, Move, Shoot);
+		KeyState(Hero, bullets, map, Move, Shoot, EscapePressed);
 
-		map.DrawMap();
-		map.DrawBullets(bullets);
-		map.MoveBullets(bullets, Bullets_Move);
-		map.checkbullets(bullets, enemies);
-		map.Move_Enemies(enemies, Enemy_Move);
+		map.DrawMap(EscapePressed);
+		map.DrawBullets(bullets, enemy_bullets);
+		map.MoveBullets(bullets, enemy_bullets, Bullets_Move, Enemy_Bullets_Move);
+		map.checkbullets(Hero, bullets, enemies, enemy_bullets, SetArgs, Score);
+		map.Move_Enemies(enemies, Enemy_Move, EnemyPos, SetArgs, Win, Hero);
+		map.Enemy_Fire(enemy_bullets, EnemyPos, Enemy_Fire_Time);
 		result = clock() -  start;
 
 		Move.add_time(result);
 		Shoot.add_time(result);
 		Enemy_Move.add_time(result);
 		Bullets_Move.add_time(result);
-
-		//Win = true;
-		//Hero.DestroyShip();
+		Enemy_Bullets_Move.add_time(result);
+		Enemy_Fire_Time.add_time(result);
 	}
 
 	system("cls");
 
-	wcout << "Win\n";
-
 	if (Win) {
 		wcout << "You Win\n";
-		AddToFile(NickName, 100, FilePath);
+		AddToFile(NickName, Score, FilePath);
 	}
 	else {
 		wcout << "You Lose\n";;
 	}
+
+	Sleep(2500);
 
 	system("Pause");
 	return 0;

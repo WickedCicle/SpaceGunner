@@ -10,15 +10,15 @@ void ReadFromFile(string FilePath, vector<Board> &scoreboard) {
 
 	try {
 		if (File.is_open()) {
-			throw "Ошибка. Файл уже открыт.";
+			throw string("Ошибка. Файл уже открыт.\n");
 		}
 		File.open(FilePath);
-		if (!File.is_open()) {
-			throw "Ошибка открытия файла.";
+		if (!File) {
+			ofstream file(FilePath);
 		}
 	}
-	catch (wstring str) {
-		wcout << str;
+	catch (string &str) {
+		cout << str;
 	}
 
 	while (getline(File, str)) {
@@ -41,11 +41,12 @@ void AddToFile(string name, int score, string FilePath) {
 	ofstream File;
 	try {
 		if (File.is_open()) {
-			throw "Ошибка. Файл уже открыт.";
+			throw string("Ошибка. Файл уже открыт.");
 		}
 		File.open(FilePath, ofstream::app);
 		if (!File.is_open()) {
-			throw "Ошибка открытия файла.";
+			ofstream file(FilePath);
+			throw string("Ошибка открытия файла.");
 		}
 	}
 	catch (wstring str) {
@@ -61,7 +62,6 @@ void AddToFile(string name, int score, string FilePath) {
 string WriteName() {
 	string name;
 	wcout << "Введите ваше имя.\n";
-	cin.get();
 	do {
 		getline(cin, name);
 	} while (!CheckName(name));

@@ -12,9 +12,6 @@ enum actions_cooldown {
 
 void MoveUp(Ship &Hero, World &map, Timer &Move);
 void MoveDown(Ship &Hero, World &map, Timer &Move);
-void MoveLeft(Ship &Hero, World &map, Timer &Move);
-void MoveRight(Ship &Hero, World &map, Timer &Move);
-
-void KeyState(Ship &Hero, vector<Bullet> &bullets, World &map, Timer &Move, Timer &Shoot);
+void KeyState(Ship &Hero, vector<Bullet> &bullets, World &map, Timer &Move, Timer &Shoot, bool &EscapePressed);
 
 #endif // !KEY_H

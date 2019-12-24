@@ -8,6 +8,13 @@ enum direction {
 	right = 1
 };
 
+struct FirstEnemyPos {
+	int x;
+	int y;
+	int count_row;
+	int count_column;
+};
+
 class Enemy : public Ship {
 private:
 	bool direction = direction::right;
