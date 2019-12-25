@@ -1,11 +1,14 @@
 #include "ScoreBoard.h";
 
+using namespace std;
+
+// считывание информации из файла
 void ReadFromFile(string FilePath, vector<Board> &scoreboard) {
 	ifstream File;
-	Board board;
-	string str;
-	string name;
-	int score;
+	Board board; // структура для хранения имени и счёта
+	string str; // временная строка
+	string name; // переменная для хранения имени
+	int score; // переменная для хранения счёта
 	bool is_name = 1;
 
 	try {
@@ -37,6 +40,7 @@ void ReadFromFile(string FilePath, vector<Board> &scoreboard) {
 	File.close();
 }
 
+// добавление информации о пользователе в файл
 void AddToFile(string name, int score, string FilePath) {
 	ofstream File;
 	try {
@@ -46,19 +50,20 @@ void AddToFile(string name, int score, string FilePath) {
 		File.open(FilePath, ofstream::app);
 		if (!File.is_open()) {
 			ofstream file(FilePath);
-			throw string("Ошибка открытия файла.");
 		}
 	}
 	catch (wstring str) {
 		wcout << str;
 	}
 
+	// добавление имени и счёта в файл
 	File << name << endl;
 	File << score << endl;
 
 	File.close();
 }
 
+// ввод имени пользователя
 string WriteName() {
 	string name;
 	wcout << "Введите ваше имя.\n";
@@ -71,6 +76,7 @@ string WriteName() {
 	return name;
 }
 
+// проверка правильности ввода имени
 bool CheckName(string name) {
 	if (name[0] == '\0') {
 		wcout << "Ошибка. Введена пустая строка.\n";
@@ -90,7 +96,7 @@ bool CheckName(string name) {
 			continue;
 		}
 		if (!isdigit(name[i]) && !isalpha(name[i])) {
-			wcout << "Ошибка. Использованы специальные символы.\n";
+			wcout << "Ошибка. Допускается использование латиницы и цифр.\n";
 			return false;
 		}
 	}

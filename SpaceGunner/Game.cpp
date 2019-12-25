@@ -14,76 +14,74 @@ using namespace std;
 
 int main() {
 	SetConsoleOutputCP(1251);
-	RemoveScrollBox();
 	FullScreen();
+	RemoveScrollBox();
 	HideCursor();
-	//LucidaConnect();
 	srand(time(NULL));
 
-	bool EscapePressed = false;
-	bool Win = false;
-	int Score = 0;
+	bool EscapePressed = false; // переменная для хранения, нажат ли Esc
+	bool Win = false; // переменная для хранения победы пользователя
+	int Score = 0; // счёт игрока
 
-	string NickName;
+	string NickName; // имя игрока
 	NickName = WriteName();
 	Sleep(200);
 
-	Settings_Args SetArgs;
-	MainMenu(SetArgs);
+	Settings_Args SetArgs; // структура, хранящая настройки карты
+	MainMenu(SetArgs); // главное меню
 
 	SetConsoleOutputCP(65001);
 	UnicodeConnect();
 
-	Timer Move;
-	Timer Shoot;
-	Timer Enemy_Move;
-	Timer Bullets_Move;
-	Timer Enemy_Bullets_Move;
-	Timer Enemy_Fire_Time;
+	Timer Move; // таймер на перемещение героя
+	Timer Shoot; // таймер на стрельбу героя
+	Timer Enemy_Move; // таймер на перемещение врагов
+	Timer Bullets_Move; // таймер на полёт пуль 
 
 	clock_t start;
 	float result = 0;
 
 	FirstEnemyPos EnemyPos;
 	World map(SetArgs.length, SetArgs.width);
-	vector<Enemy> enemies;
-	vector<Bullet> bullets;
-	vector<Bullet> enemy_bullets;
-	Ship Hero(0, (int)SetArgs.width/2, SetArgs.Hero_health);
+	vector<Enemy> enemies; // вектор хранящий врагов
+	vector<Bullet> bullets; // вектор хранящий пули героя
+	vector<Bullet> enemy_bullets; // вектор хранящий пули врагов
+	Ship Hero(0, (int)SetArgs.width/2, SetArgs.Hero_health); // создания корабля героя
 
 	map.CreateMap(Hero);
 	map.CreateEnemies(enemies, SetArgs.Enemy_health, EnemyPos);
 
 	while (!Hero.get_Is_dead() && !Win) {
-		start = clock();
+		start = clock(); // время начала итерации
 
 		HideCursor();
-		KeyState(Hero, bullets, map, Move, Shoot, EscapePressed);
+		KeyState(Hero, bullets, map, Move, Shoot, EscapePressed); // проверка нажатий клавиш клавиатуры
 
-		map.DrawMap(EscapePressed);
+		map.DrawMap(EscapePressed, Hero, enemies, Score);
 		map.DrawBullets(bullets, enemy_bullets);
-		map.MoveBullets(bullets, enemy_bullets, Bullets_Move, Enemy_Bullets_Move);
+		map.MoveBullets(bullets, enemy_bullets, Bullets_Move);
 		map.checkbullets(Hero, bullets, enemies, enemy_bullets, SetArgs, Score);
 		map.Move_Enemies(enemies, Enemy_Move, EnemyPos, SetArgs, Win, Hero);
-		map.Enemy_Fire(enemy_bullets, EnemyPos, Enemy_Fire_Time);
-		result = clock() -  start;
+		map.Enemy_Fire(enemy_bullets, EnemyPos);
+		result = clock() -  start; // время конца итерации
 
+		// добавления времени работы итерации к таймерам
 		Move.add_time(result);
 		Shoot.add_time(result);
 		Enemy_Move.add_time(result);
 		Bullets_Move.add_time(result);
-		Enemy_Bullets_Move.add_time(result);
-		Enemy_Fire_Time.add_time(result);
 	}
 
 	system("cls");
 
+	// если пользователь победил
 	if (Win) {
-		wcout << "You Win\n";
-		AddToFile(NickName, Score, FilePath);
+		wcout << L"Победа\n";
+		wcout << L"Ваш счёт: " << Score << "\n";
+		AddToFile(NickName, Score, FilePath); // добавляем его результат в файл
 	}
 	else {
-		wcout << "You Lose\n";;
+		wcout << L"Поражение\n";;
 	}
 
 	Sleep(2500);

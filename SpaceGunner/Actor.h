@@ -1,10 +1,11 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
+// базовый класс для объектов
 class Actor {
 private:
-	int x;
-	int y;
+	int x; // координата x
+	int y; // координата y
 public:
 	Actor(int new_x, int new_y) { x = new_x; y = new_y; }
 

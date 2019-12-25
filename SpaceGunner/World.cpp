@@ -1,6 +1,7 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include "World.h"
 
+// конструктор, выделение памяти под матрицу
 World::World(int new_length, int new_width) {
 	length = new_length;
 	width = new_width;
@@ -20,6 +21,7 @@ int World::get_width(){
 }
 
 void World::CreateMap(Ship Hero) {
+	// изменение значений матрицы
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < length; j++) {
 			map[i][j] = map_symbols::border;
@@ -49,6 +51,7 @@ void World::CreateMap(Ship Hero) {
 		}
 	}
 
+	// отрисовка карты в консоли
 	SetCurPos(0, 0);
 	for (int i = 0; i < width; i++) {
 		wprintf_s(L"%s\n", map[i]);
@@ -59,6 +62,7 @@ void World::DrawBullets(vector<Bullet> &bullets, vector<Bullet> &enemy_bullets) 
 	int count_bullets = bullets.size();
 	int count_enemy_bullets = enemy_bullets.size();
 
+	// в прошлом месте пули ставиться пробел, а пуля ставится в следующей клетку по направлению движения
 	for (int i = 0; i < count_bullets; i++) {
 		if (map[bullets[i].get_y_pos()][bullets[i].get_x_pos() - 1] == map_symbols::hero_bullet) {
 			map[bullets[i].get_y_pos()][bullets[i].get_x_pos() - 1] = map_symbols::space;
@@ -74,23 +78,19 @@ void World::DrawBullets(vector<Bullet> &bullets, vector<Bullet> &enemy_bullets) 
 	}
 }
 
-void World::MoveBullets(vector<Bullet> &bullets, vector<Bullet> &enemy_bullets, Timer &Bullets_Move, Timer &Enemy_Bullets_Move) {
-	if (Bullets_Move.get_time() > 1000/(length/2)) {
+void World::MoveBullets(vector<Bullet> &bullets, vector<Bullet> &enemy_bullets, Timer &Bullets_Move) {
+	if (Bullets_Move.get_time() > 1000/(length/2)) { // если время с прошлого изменения положения пуль больше определенного значения
 		int count_bullets = bullets.size();
-
-		for (int i = 0; i < count_bullets; i++) {
-			bullets[i].set_x_pos(bullets[i].get_x_pos() + 1);
-		}
-		Bullets_Move.reset_time();
-	}
-
-	if (Enemy_Bullets_Move.get_time() > 1000 / (length / 2)) {
 		int count_enemy_bullets = enemy_bullets.size();
 
+		for (int i = 0; i < count_bullets; i++) {
+			bullets[i].set_x_pos(bullets[i].get_x_pos() + 1); // меняем положение пули
+		}
 		for (int i = 0; i < count_enemy_bullets; i++) {
 			enemy_bullets[i].set_x_pos(enemy_bullets[i].get_x_pos() - 1);
 		}
-		Enemy_Bullets_Move.reset_time();
+
+		Bullets_Move.reset_time(); // устанавливает время в ноль
 	}
 }
 
@@ -147,9 +147,10 @@ void World::checkbullets(Ship &Hero, vector<Bullet> &bullets, vector<Enemy> &ene
 	}
 }
 
+// создает на карте врагов
 void World::CreateEnemies(vector<Enemy> &enemies, int Enemy_health, FirstEnemyPos &EnemyPos) {
-	int count_row = 0;
-	int count_column = 0;
+	int count_row = 0; // переменная-счётчик для количества строк
+	int count_column = 0; // переменная-счётчик для количества столбцов
 
 	for (int i = 3; i < width - 3; i += 2) {
 		for (int j = (3 * length) / 4; j < length; j += 2) {
@@ -160,32 +161,47 @@ void World::CreateEnemies(vector<Enemy> &enemies, int Enemy_health, FirstEnemyPo
 		count_row++;
 	}
 
+	// записывает положение первого врага в структуру
 	EnemyPos.x = (3 * length) / 4;
 	EnemyPos.y = 3;
 	EnemyPos.count_row = count_row;
 	EnemyPos.count_column = count_column/count_row;
 }
 
-void World::Enemy_Fire(vector<Bullet> &enemy_bullets, FirstEnemyPos &EnemyPos, Timer &EnemyFire) {
-	bool column_found = false;
-	int must_shoot = false;
+// выстрел врага
+void World::Enemy_Fire(vector<Bullet> &enemy_bullets, FirstEnemyPos &EnemyPos) {
+	bool column_found = false; // найден ли в строке хотя бы один вражеский корабль
+	int must_shoot = false; // 1/75 шанс сделать выстрел
 	int row_count = 0;
+	
+	// если в верхней строке на осталось кораблей
+	for (int i = 0; i < EnemyPos.count_column; i++) {
+		if (map[EnemyPos.y][EnemyPos.x] == map_symbols::border) {
+			column_found = true;
+		}
+	}
+	// перемещаем положение первой строки на одну вниз
+	if (column_found) {
+		EnemyPos.y = EnemyPos.y + 2;
+		column_found = false;
+	}
 
+	// проверяем количество оставшихся строк врагов
 	while (map[EnemyPos.y + 2 * row_count][EnemyPos.x + 2 * (EnemyPos.count_column - 1)] != map_symbols::border) {
 		row_count++;
 	}
-
+	// и если их стало меньше, то устанавливаем новое значение
 	if (row_count < EnemyPos.count_row) {
 		EnemyPos.count_row = row_count;
 	}
 
 	for (int i = 0; i < EnemyPos.count_row; i++) {
 		for (int j = 0; j < EnemyPos.count_column; j++) {
-			if (!column_found) {
+			if (!column_found) { // если в строке ещё не найдет коробль
 				if (map[EnemyPos.y + 2 * i][EnemyPos.x + 2 * j] == map_symbols::enemy) {
-					must_shoot = rand() % 150;
-					if (must_shoot == 1) {
-						enemy_bullets.push_back(Bullet(EnemyPos.x + 2 * j, EnemyPos.y + 2 * i));
+					must_shoot = rand() % 75; // записываем в переменную случайное число от 0 до 75
+					if (must_shoot == 1) { // если случайное число 1
+						enemy_bullets.push_back(Bullet(EnemyPos.x + 2 * j, EnemyPos.y + 2 * i)); // то враг выстреливает
 					}
 					column_found = true;
 				}
@@ -195,20 +211,25 @@ void World::Enemy_Fire(vector<Bullet> &enemy_bullets, FirstEnemyPos &EnemyPos, T
 	}
 }
 
+// перемещение врагов по карте
 void World::Move_Enemies(vector<Enemy> &enemies, Timer &Enemy_Move, FirstEnemyPos &EnemyPos, Settings_Args &SetArgs, bool &Win, Ship &Hero) {
-	static int forward = 0;
+	static int forward = 0; // переменная хранящее количество перемещений кораблей, при определённом значение они перемещаются вперед
 	int enemies_count = enemies.size();
+
+	// если врагов не осталось, то пользователь выиграл
 	if (enemies_count == 0) {
 		Win = true;
 		return;
 	}
 
+	// если время с прошлого изменения положения врагов больше определенного значения
 	if (Enemy_Move.get_time() >= 200*pow(1.2, SetArgs.Enemy_health)) {
 		for (int i = 0; i < enemies_count; i++) {
 			if (enemies[i].get_x_pos() == 0) {
-				Hero.DestroyShip();
+				Hero.DestroyShip(); // если враги дошли на конца карты, то пользователь проигрывает
 			}
 
+			// если время с прошлого изменения положения пуль больше определенного значения
 			if (enemies[i].get_direction() == direction::right && enemies[i].get_y_pos() >= (width - 3)) {
 				for (int j = 0; j < enemies_count; j++) {
 					enemies[j].reverse_dir();
@@ -223,7 +244,7 @@ void World::Move_Enemies(vector<Enemy> &enemies, Timer &Enemy_Move, FirstEnemyPo
 			}
 			
 		}
-		//if (forward >= 7*pow(1.1, SetArgs.Enemy_health)) {
+		// если значение переменной forward больше определённого, значения, то все оставшиеся вражеские корабли перемещаются на клетку ближе к герою
 		if (forward >= 8) {
 			for (int j = 0; j < enemies_count; j++) {
 				SetMapSymbol(enemies[j].get_x_pos(), enemies[j].get_y_pos(), map_symbols::space);
@@ -246,6 +267,7 @@ void World::Move_Enemies(vector<Enemy> &enemies, Timer &Enemy_Move, FirstEnemyPo
 				SetMapSymbol(enemies[i].get_x_pos(), enemies[i].get_y_pos(), map_symbols::enemy);
 			}
 		}
+
 		if (enemies[enemies_count - 1].get_direction() == direction::right) {
 			EnemyPos.y += 1;
 		}
@@ -258,7 +280,8 @@ void World::Move_Enemies(vector<Enemy> &enemies, Timer &Enemy_Move, FirstEnemyPo
 	}
 }
 
-void World::DrawMap(bool &EscapePressed) {
+// отрисовывает карту, а также состояние объектов(количество жизней, количество врагов)
+void World::DrawMap(bool &EscapePressed, Ship &Hero, vector<Enemy> &enemies, int &Score) {
 	if (!EscapePressed) {
 		SetCurPos(0, 2);
 
@@ -274,4 +297,12 @@ void World::DrawMap(bool &EscapePressed) {
 		}
 		EscapePressed = false;
 	}
+
+	for (int i = 53; i < 65; i++) {
+		SetCurPos(i, width);
+		wcout << L" ";
+	}
+
+	SetCurPos(0, width);
+	wcout << L"Количество жизней = " << Hero.get_current_health() << L"  Количество врагов = " << enemies.size() << L"  Счёт = " << Score;
 }

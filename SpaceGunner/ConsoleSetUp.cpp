@@ -1,5 +1,6 @@
 #include "ConsoleSetUp.h"
 
+
 void HideCursor() {
 	CONSOLE_CURSOR_INFO info;
 	info.dwSize = 100;
@@ -28,13 +29,12 @@ void LucidaConnect() {
 }
 
 void RemoveScrollBox() {
-	HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_SCREEN_BUFFER_INFO info;
-	GetConsoleScreenBufferInfo(hstdout, &info);
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
 
 	info.dwSize.X = info.dwMaximumWindowSize.X;
 	info.dwSize.Y = info.dwMaximumWindowSize.Y;
-	SetConsoleScreenBufferSize(hstdout, info.dwSize);
+	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), info.dwSize);
 
 	HWND x = GetConsoleWindow();
 	ShowScrollBar(x, SB_BOTH, FALSE);

@@ -2,6 +2,7 @@
 
 using namespace std;
 
+// перечисление содержит пункты главного меню
 enum MainMenu {
 	Play = 0,
 	Settings = 1,
@@ -10,6 +11,7 @@ enum MainMenu {
 	Exit = 4
 };
 
+// перечисление содержит пункты меню настроек
 enum SettingsMenu {
 	Length = 0,
 	Width = 1,
@@ -19,6 +21,7 @@ enum SettingsMenu {
 	Back = 5
 };
 
+// перечисление содержит пункты паузы
 enum EscapeMenu {
 	Continue = 0,
 	ExitGame = 1
@@ -26,7 +29,7 @@ enum EscapeMenu {
 
 void MainMenu(Settings_Args &SetArgs) {
 	bool IsLeaderBoardOpened = false;
-	int switcher = MainMenu::Play;
+	int switcher = MainMenu::Play; // переменная для хранения текущего выбранного меню
 	wcout << "<< Играть >>\n";
 	wcout << "Настройки\n";
 	wcout << "Как играть\n";
@@ -35,7 +38,7 @@ void MainMenu(Settings_Args &SetArgs) {
 
 	while (true) {
 		if (GetKeyState('W') < 0 || GetKeyState(VK_UP) < 0) {
-			Sleep(250);
+			Sleep(150);
 			system("cls");
 			if (switcher == MainMenu::Play) {
 				wcout << "Играть\n";
@@ -84,7 +87,7 @@ void MainMenu(Settings_Args &SetArgs) {
 			}
 		}
 		if (GetKeyState('S') < 0 || GetKeyState(VK_DOWN) < 0) {
-			Sleep(250);
+			Sleep(150);
 			system("cls");
 			if (switcher == MainMenu::Play) {
 				wcout << "Играть\n";
@@ -149,7 +152,7 @@ void MainMenu(Settings_Args &SetArgs) {
 				wcout << "Таблица лидеров\n";
 				wcout << "Выход\n";
 				switcher = MainMenu::Play;
-				Sleep(250);
+				Sleep(200);
 			}
 			else if (switcher == MainMenu::Help) {
 				system("cls");
@@ -161,7 +164,7 @@ void MainMenu(Settings_Args &SetArgs) {
 				wcout << "Таблица лидеров\n";
 				wcout << "Выход\n";
 				switcher = MainMenu::Play;
-				Sleep(250);
+				Sleep(200);
 			}
 			else if (switcher == MainMenu::ScoreBoard) {
 				system("cls");
@@ -173,7 +176,7 @@ void MainMenu(Settings_Args &SetArgs) {
 				wcout << "Таблица лидеров\n";
 				wcout << "Выход\n";
 				switcher = MainMenu::Play;
-				Sleep(250);
+				Sleep(200);
 			}
 			else if (switcher == MainMenu::Exit) {
 				ExitProcess(0);
@@ -193,7 +196,7 @@ void SettingsMenu(Settings_Args &SetArgs) {
 
 	while (true) {
 		if (GetKeyState('W') < 0 || GetKeyState(VK_UP) < 0) {
-			Sleep(250);
+			Sleep(150);
 			system("cls");
 			if (switcher == SettingsMenu::Length) {
 				wcout << "Длина поля = " << SetArgs.length << "\n";
@@ -257,7 +260,7 @@ void SettingsMenu(Settings_Args &SetArgs) {
 			}
 		}
 		if (GetKeyState('S') < 0 || GetKeyState(VK_DOWN) < 0) {
-			Sleep(250);
+			Sleep(150);
 			system("cls");
 			if (switcher == SettingsMenu::Length) {
 				wcout << "Длина поля = " << SetArgs.length << "\n";
@@ -322,7 +325,7 @@ void SettingsMenu(Settings_Args &SetArgs) {
 		}
 
 		if (GetKeyState(VK_LEFT) < 0 || GetKeyState('A') < 0) {
-			Sleep(125);
+			Sleep(150);
 			if (switcher == SettingsMenu::Length && SetArgs.length > 30) {
 				system("cls");
 				SetArgs.length--;
@@ -369,7 +372,7 @@ void SettingsMenu(Settings_Args &SetArgs) {
 			}
 		}
 		if (GetKeyState(VK_RIGHT) < 0 || GetKeyState('D') < 0) {
-			Sleep(125);
+			Sleep(150);
 			if (switcher == SettingsMenu::Length && SetArgs.length < 70) {
 				system("cls");
 				SetArgs.length++;
@@ -443,9 +446,10 @@ void HelpMenu() {
 	wcout << "W - перемещение вверх\n";
 	wcout << "S - перемещение вниз\n";
 	wcout << "Пробел - выстрел\n";
+	wcout << "Esc - пауза/выход из приложения\n";
 	wcout << "<< Назад >>\n";
 
-	Sleep(250);
+	Sleep(200);
 	while (true) {
 		if (GetKeyState(VK_RETURN) < 0) {
 			break;
@@ -477,7 +481,7 @@ void LeaderBoard(bool &IsOpened) {
 
 	cout << "<< Назад >>\n";
 
-	Sleep(250);
+	Sleep(200);
 	while (true) {
 		if (GetKeyState(VK_RETURN) < 0) {
 			break;
@@ -493,7 +497,7 @@ void EscMenu() {
 
 	while (true) {
 		if (GetKeyState('W') < 0 || GetKeyState(VK_UP) < 0) {
-			Sleep(250);
+			Sleep(150);
 			if (switcher == EscapeMenu::Continue) {
 				system("cls");
 				wcout << L"Продолжить\n";
@@ -510,7 +514,7 @@ void EscMenu() {
 			}
 		}
 		if (GetKeyState('S') < 0 || GetKeyState(VK_DOWN) < 0) {
-			Sleep(250);
+			Sleep(150);
 			if (switcher == EscapeMenu::Continue) {
 				system("cls");
 				wcout << L"Продолжить\n";

@@ -2,18 +2,18 @@
 #include "Menu.h"
 
 void MoveUp(Ship &Hero, World &map, Timer &Move) {
-	if (Hero.get_y_pos() > 2 && Move.get_time() > actions_cooldown::move_cooldown) {
+	if (Hero.get_y_pos() > 2 && Move.get_time() > actions_cooldown::move_cooldown) { // проверка возможности перемещения
 		map.SetMapSymbol(Hero.get_x_pos(), Hero.get_y_pos(), map_symbols::space);
-		Hero.Move(0, -1);
+		Hero.Move(0, -1); // перемещение корабля на одну позицию вверх
 		map.SetMapSymbol(Hero.get_x_pos(), Hero.get_y_pos(), map_symbols::hero);
 		Move.reset_time();
 	}
 }
 
 void MoveDown(Ship &Hero, World &map, Timer &Move) {
-	if (Hero.get_y_pos() < map.get_width() - 3 && Move.get_time() > actions_cooldown::move_cooldown) {
+	if (Hero.get_y_pos() < map.get_width() - 3 && Move.get_time() > actions_cooldown::move_cooldown) { // проверка возможности перемещения
 		map.SetMapSymbol(Hero.get_x_pos(), Hero.get_y_pos(), map_symbols::space);
-		Hero.Move(0, 1);
+		Hero.Move(0, 1); // перемещение корабля на одну позицию вниз
 		map.SetMapSymbol(Hero.get_x_pos(), Hero.get_y_pos(), map_symbols::hero);
 		Move.reset_time();
 	}
@@ -28,11 +28,11 @@ void KeyState(Ship &Hero, vector<Bullet> &bullets, World &map, Timer &Move, Time
 	}
 	if (GetKeyState(VK_ESCAPE) < 0) {
 		EscapePressed = true;
-		EscMenu();
+		EscMenu(); // вызывает меню-паузу
 	}
 	if (GetKeyState(VK_SPACE) < 0) { // Пробел
 		if (Shoot.get_time() > actions_cooldown::shoot_cooldown) {
-			Hero.Fire(bullets);
+			Hero.Fire(bullets); // производит выстрел
 			Shoot.reset_time();
 		}
 	}

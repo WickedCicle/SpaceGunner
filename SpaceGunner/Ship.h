@@ -10,9 +10,9 @@ using namespace std;
 
 class Ship : public Actor {
 private:
-	bool IsDead;
-	int current_health;
-	int max_health;
+	bool IsDead; // переменная хранит состояние корабля
+	int current_health; // хранит текущее количество здоровья
+	int max_health; // хранит максимальное количество здоровья
 public:
 	Ship(int new_x, int new_y, int new_health) : Actor(new_x, new_y) {
 		IsDead = false;
@@ -24,13 +24,13 @@ public:
 	void set_current_health(int new_health);
 
 	bool get_Is_dead();
-	void DestroyShip();
+	void DestroyShip(); // устанавливает значение поля IsDead на True
 
-	void ReceiveDamage(int damage);
+	void ReceiveDamage(int damage); // уменьшает текущее здоровья на величину damage
 
-	void Fire(vector<Bullet> &bullets);
+	void Fire(vector<Bullet> &bullets); // производит выстрел
 
-	void Move(int x, int y);
+	void Move(int x, int y); // перемещает корабль на координаты x,y, относительно текущего положения
 };
 
 #endif // !SHIP_H

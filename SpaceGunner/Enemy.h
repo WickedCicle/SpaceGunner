@@ -15,14 +15,17 @@ struct FirstEnemyPos {
 	int count_column;
 };
 
+// класс для хранения информации о врагах
 class Enemy : public Ship {
 private:
-	bool direction = direction::right;
+	bool direction = direction::right; // переменная, хранящая текущее направление движения вражеских кораблей
 public:
 	Enemy(int new_x, int new_y, int new_health) : Ship(new_x, new_y, new_health) {};
+
 	void set_direction(bool direction);
 	int get_direction();
-	void reverse_dir();
+
+	void reverse_dir(); // меняет направление движения
 };
 
 #endif // 

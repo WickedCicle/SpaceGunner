@@ -5,12 +5,11 @@
 
 class Timer {
 private:
-	clock_t time_from_last = 0;
+	clock_t time_from_last = 0; // переменная хранит время, прошедшее с последнего вызова
 public:
-	//Timer();
 	clock_t get_time();
 	void add_time(clock_t time);
-	void reset_time();
+	void reset_time(); // устанавливает значение переменной time_from_last в ноль
 	void set_time(clock_t new_time);
 };
 

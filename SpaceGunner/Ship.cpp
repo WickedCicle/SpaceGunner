@@ -18,6 +18,7 @@ void Ship::DestroyShip() {
 	IsDead = true;
 }
 
+// добавление в вектор пуль
 void Ship::Fire(vector<Bullet> &bullets) {
 	bullets.push_back(Bullet(get_x_pos() + 1, get_y_pos()));
 }
